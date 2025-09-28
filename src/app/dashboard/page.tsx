@@ -2,33 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/server/auth";
-
-const mockRepos = [
-  {
-    name: "platform-core",
-    provider: "GitHub",
-    owner: "acme-inc",
-    url: "https://github.com/acme-inc/platform-core",
-    status: "Synced 2 minutes ago",
-    pullRequests: 12,
-  },
-  {
-    name: "mobile-client",
-    provider: "GitLab",
-    owner: "acme-mobile",
-    url: "https://gitlab.com/acme-mobile/mobile-client",
-    status: "Sync queued",
-    pullRequests: 5,
-  },
-  {
-    name: "observability",
-    provider: "GitHub",
-    owner: "platform-team",
-    url: "https://github.com/platform-team/observability",
-    status: "Synced 1 hour ago",
-    pullRequests: 19,
-  },
-];
+import { AddRepositoryForm } from "./_components/add-repository-form";
+import { RepositoryList } from "./_components/repository-list";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -95,70 +70,7 @@ export default async function DashboardPage() {
               </p>
             </div>
 
-            <form className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400" htmlFor="repo-url">
-                  Repository URL
-                </label>
-                <input
-                  id="repo-url"
-                  name="repo-url"
-                  type="url"
-                  placeholder="https://github.com/org/repo"
-                  className="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
-                  required
-                />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400" htmlFor="provider">
-                    Provider
-                  </label>
-                  <select
-                    id="provider"
-                    name="provider"
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-white focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
-                    defaultValue="GitHub"
-                  >
-                    <option>GitHub</option>
-                    <option>GitLab</option>
-                    <option>Bitbucket</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400" htmlFor="branch">
-                    Default branch
-                  </label>
-                  <input
-                    id="branch"
-                    name="branch"
-                    type="text"
-                    placeholder="main"
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400" htmlFor="access">
-                  Access token
-                </label>
-                <input
-                  id="access"
-                  name="access"
-                  type="password"
-                  placeholder="Personal access token"
-                  className="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
-                />
-                <p className="text-xs text-slate-500">Stored encrypted. Rotate tokens any time.</p>
-              </div>
-              <button
-                type="submit"
-                className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-sky-500/40 transition hover:bg-sky-400"
-              >
-                Connect repository
-                <span aria-hidden className="text-base">-&gt;</span>
-              </button>
-            </form>
+            <AddRepositoryForm />
           </div>
 
           <div className="space-y-6">
@@ -172,32 +84,7 @@ export default async function DashboardPage() {
               </button>
             </div>
 
-            <ul className="space-y-4">
-              {mockRepos.map((repo) => (
-                <li
-                  key={repo.url}
-                  className="group flex flex-col gap-3 rounded-3xl border border-white/10 bg-slate-900/70 p-6 transition hover:border-sky-400/40 hover:shadow-lg hover:shadow-sky-500/30 sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div className="space-y-1">
-                    <p className="text-sm font-semibold text-white">{repo.owner}/{repo.name}</p>
-                    <p className="text-xs text-slate-400">{repo.provider} - {repo.status}</p>
-                    <Link
-                      className="inline-flex items-center gap-2 text-xs font-semibold text-sky-300 transition hover:text-sky-200"
-                      href={repo.url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      View repository
-                      <span aria-hidden className="text-sm">-&gt;</span>
-                    </Link>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-right text-xs text-slate-300">
-                    <p>AI-suggested PRs</p>
-                    <p className="pt-1 text-2xl font-semibold text-white">{repo.pullRequests}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <RepositoryList />
           </div>
         </section>
 

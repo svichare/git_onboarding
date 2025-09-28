@@ -26,6 +26,15 @@ model Post {
     @@index([name])
 }
 
+model Repository {
+    id          Int      @id @default(autoincrement())
+    url         String   @unique
+    createdAt   DateTime @default(now())
+
+    createdBy   User     @relation(fields: [createdById], references: [id])
+    createdById String
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -63,6 +72,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    repositories  Repository[]
 }
 
 model VerificationToken {
